@@ -1,22 +1,26 @@
 import dbus
 
-deviceTypes = ['Unknown',
-'Line Power',
-'Battery',
-'UPS',
-'Monitor',
-'Mouse',
-'Keyboard',
-'PDA',
-'Phone']
+deviceTypes = [
+    'Unknown',
+    'Line Power',
+    'Battery',
+    'UPS',
+    'Monitor',
+    'Mouse',
+    'Keyboard',
+    'PDA',
+    'Phone',
+]
 
-deviceStates = ['Unknown',
-'Charging',
-'Discharging',
-'Emtpy',
-'Fully Charged',
-'Pending Charge',
-'Pending Discharge']
+deviceStates = [
+    'Unknown',
+    'Charging',
+    'Discharging',
+    'Emtpy',
+    'Fully Charged',
+    'Pending Charge',
+    'Pending Discharge',
+]
 
 # Get the system bus
 bus = dbus.SystemBus()
@@ -27,8 +31,13 @@ upower_interface = dbus.Interface(upower_object, 'org.freedesktop.UPower')
 
 # Iterate over all UPower devices
 for devicePath in upower_interface.EnumerateDevices():
-    # Access the object and get a dbus properties interface to it
+    # Access the device object
     device_object = bus.get_object('org.freedesktop.UPower', devicePath)
+
+    # Refresh the device
+    device_object.Refresh(dbus_interface='org.freedesktop.UPower.Device')
+
+    # Get a dbus properties interface to the device
     properties_interface = dbus.Interface(device_object, 'org.freedesktop.DBus.Properties')
 
     # Extract the properties we're interested in
